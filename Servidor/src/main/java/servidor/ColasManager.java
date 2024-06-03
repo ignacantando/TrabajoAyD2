@@ -37,8 +37,9 @@ public class ColasManager implements Registro,Llamado,Notificacion,Monitoreo{
     private String prioridad;
     private String tipoArchivo;
     private Prioridad prio;
-    private final String archivoJson = "clientes.json";
-    private final String archivoLogJson = "clientes_log.json";
+    IArchivoFactory factory;
+    IArchivoClientes archivoClientes ;
+    IArchivoLogs archivoLogs;
 
     
     
@@ -50,8 +51,6 @@ public class ColasManager implements Registro,Llamado,Notificacion,Monitoreo{
         prioridad= configLoader.getStringProperty("server.prioridad");
         tipoArchivo = configLoader.getStringProperty("server.tipoarchivo");
 
-        
-        IArchivoFactory factory;
 
         if(tipoArchivo.compareToIgnoreCase("json")==0) {
         	factory = new JsonArchivoFactory();
@@ -63,8 +62,8 @@ public class ColasManager implements Registro,Llamado,Notificacion,Monitoreo{
         	  factory = new TxtArchivoFactory();
         }
         
-        IArchivoClientes archivoClientes = factory.crearArchivoClientes();
-    	IArchivoLogs archivoLogs = factory.crearArchivoLogs();
+        archivoClientes = factory.crearArchivoClientes();
+    	archivoLogs = factory.crearArchivoLogs();
     	clientesLog=archivoLogs.leerLogs();
     	clientes=archivoClientes.leerClientes();
     	System.out.println(clientes);
@@ -126,6 +125,9 @@ public class ColasManager implements Registro,Llamado,Notificacion,Monitoreo{
     		
     		clientesLog.add(nuevolog);
     		clientes.add(nuevo);
+    		
+    		archivoLogs.guardarLogs(clientesLog);
+    		this.archivoClientes.guardarClientes(clientes);
     		this.dnis.add(dni);
     	}
     		
@@ -153,6 +155,7 @@ public class ColasManager implements Registro,Llamado,Notificacion,Monitoreo{
     				clientesLog.get(i).setTiempoFin();
     			}	
     		}
+    		archivoLogs.guardarLogs(clientesLog);
     		indexDnis++;
     		dnis.remove(0);
     	}
