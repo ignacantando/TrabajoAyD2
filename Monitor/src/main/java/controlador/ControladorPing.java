@@ -27,9 +27,9 @@ public class ControladorPing implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
         case "REALIZAR PING":
-            this.ping.inicia();
+            //this.ping.inicia();
             this.vista.getPingLabel().setText("Resultado de la tarea:");
-            this.vista.getResultadoLabel().setText(this.ping.getResult());
+           // this.vista.getResultadoLabel().setText(this.ping.getResult());
         break;
     }
 	}

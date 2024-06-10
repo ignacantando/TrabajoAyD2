@@ -1,67 +1,102 @@
 package modelo;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Monitor implements Callable<String>{
+
+public class Monitor implements Serializable {
+	private static final long serialVersionUID = 1131654034383541732L;
+	Socket socket;
+	BufferedReader entrada;
+	BufferedWriter salida;
+	private ObjectOutputStream oos;
+	private PrintWriter out;
 	
 	public Monitor() {
 	}
+
 	
-	@Override
-	public String call() throws UnknownHostException, IOException {
-			Socket socket = new Socket("localhost", 5555);
-			//inicializo
-			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            //PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
-            if(socket.isConnected()) {
-            	oos.flush();
-                oos.writeObject(null);
-                System.out.println("se mando el objeto");
-                oos.flush();
-                out.println("hola");
-                oos.flush();
-                // Leer respuesta del servidor
-                String respuesta_servidor;
-                while ((respuesta_servidor = reader.readLine()) != null) {
-                	socket.close();
-                	return respuesta_servidor;
-                }
-                socket.close();
-                return null;
-            }
-            socket.close();
-            return null;
+	private void abrirConexion(int puerto) throws IOException{
+	    this.socket=new Socket("localhost",puerto);
+	    this.salida=new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+	    this.entrada=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+	    this.oos=new ObjectOutputStream(socket.getOutputStream());
+	    this.out=new PrintWriter(socket.getOutputStream(),true);
 	}
 	
-	public void instanciar_nuevo_servidor() {
-		try {
-			System.out.println("pre socket");
-			Socket socket = new Socket("localhost", 7777);
-			//inicializo
-			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-	        PrintWriter out = new PrintWriter(socket.getOutputStream(),true);
-	        DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-	        
-	        dos.flush();
-			dos.writeUTF("nueva instancia");
-			dos.flush();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void envio(Object objeto,String mensaje,int puerto) throws IOException{ 
+	        	System.out.println(objeto);
+	        	this.abrirConexion(puerto);
+	            enviarDatos(objeto,mensaje);
+	            out.println(mensaje);
+	    }
+	
+    	private void enviarDatos(Object objeto,String mensaje) throws IOException{
+    		oos.writeObject(objeto);
+    		oos.flush();
+    		
+    		out.println(mensaje);
+    		oos.flush();
+    	}
 		
-	}
-    @Override
-	public String toString() {
-		return "Monitor";
-	}
+	    public void cerrarConexion(){
+	        try {
+	            socket.close();
+	            oos.close();
+	            out.close();
+	        } catch (IOException ex) {
+	        }
+
+	    }
+	    
+		public Socket getSocket() {
+			return socket;
+		}
+
+		public void setSocket(Socket socket) {
+			this.socket = socket;
+		}
+
+		public BufferedReader getEntrada() {
+			return entrada;
+		}
+
+		public void setEntrada(BufferedReader entrada) {
+			this.entrada = entrada;
+		}
+
+		public BufferedWriter getSalida() {
+			return salida;
+		}
+
+		public void setSalida(BufferedWriter salida) {
+			this.salida = salida;
+		}
+
+		public ObjectOutputStream getOos() {
+			return oos;
+		}
+
+		public void setOos(ObjectOutputStream oos) {
+			this.oos = oos;
+		}
+
+		public PrintWriter getOut() {
+			return out;
+		}
+
+		public void setOut(PrintWriter out) {
+			this.out = out;
+		}
+
+		public static long getSerialversionuid() {
+			return serialVersionUID;
+		}
+
 }

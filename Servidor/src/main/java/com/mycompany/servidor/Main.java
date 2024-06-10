@@ -22,7 +22,6 @@ import servidor.Servidor;
 public class Main {
     
     public static void main(String[] args) throws Exception {
-    	System.out.println("BOCABOCABOCA");
     	Servidor servidor = new Servidor();
     	servidor.startServer();
     }

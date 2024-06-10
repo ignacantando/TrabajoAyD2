@@ -29,13 +29,20 @@ public class SocketEmpleado implements Serializable {
     public String envio(Object objeto,String mensaje){
     	String resp="";
     	try{
-        	System.out.println(objeto);
+    		this.abrirConexion(ip, 7777);
+        	enviarDatos(objeto,mensaje);
+        	cerrarConexion();
+        	
         	this.abrirConexion(ip, puerto);
-        	System.out.println("Conexion establecida");
-            System.out.println("Enviando datos");
             resp=enviarDatos(objeto,mensaje);
         }catch(Exception e){
-            
+        	try {
+				this.abrirConexion(ip, puerto);
+				 resp=enviarDatos(objeto,mensaje);
+			} catch (IOException e1) {
+				
+				e1.printStackTrace();
+			}
         }
     	cerrarConexion();
     	System.out.println("ESTO:"+resp);
@@ -44,13 +51,25 @@ public class SocketEmpleado implements Serializable {
     
    public void llama(Object objeto,String mensaje){
 	   try{
-		   this.abrirConexion(ip, puerto);
-		   //System.out.println("objeto EMPLEADO: " + objeto);
+		   this.abrirConexion(ip,7777);
 		   oos.writeObject(objeto);
 		   oos.flush();
 		   out.println(mensaje);
-	   }catch(Exception e){
 		   
+		   
+		   
+		   this.abrirConexion(ip, puerto);
+		   oos.writeObject(objeto);
+		   oos.flush();
+		   out.println(mensaje);
+	   }catch(Exception e){	   
+		   try {
+			this.abrirConexion(ip, puerto);
+			oos.writeObject(objeto);
+			oos.flush();
+			out.println(mensaje);
+		} catch (IOException e1) {
+		}
        }finally{
        	cerrarConexion();
        }
@@ -61,8 +80,7 @@ public class SocketEmpleado implements Serializable {
         this.socket=new Socket(ip,puerto);
         this.oos=new ObjectOutputStream(socket.getOutputStream());
         this.in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.out=new PrintWriter(socket.getOutputStream(),true);
-        //this.ois=new ObjectInputStream(socket.getInputStream());  
+        this.out=new PrintWriter(socket.getOutputStream(),true);  
     }
     
     private void cerrarConexion(){

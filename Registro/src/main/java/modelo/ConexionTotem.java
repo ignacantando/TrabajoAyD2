@@ -27,7 +27,6 @@ public class ConexionTotem implements Serializable{
     public ObjectOutputStream oos;
     public BufferedReader in;
     public PrintWriter out;
-    //ObjectInputStream ois;
     
     
     public void envioCliente(Object objeto,String mensaje){
@@ -42,18 +41,21 @@ public class ConexionTotem implements Serializable{
     
     public void envioDatosAservidor(Object objeto,String mensaje){
         try{
-            System.out.println(objeto);
-            System.out.println("modelo.NuevoTotem.envioDatosAservidor()" + Constantes.IP + Constantes.PUERTO);
-            abrirConexion(Constantes.IP,Constantes.PUERTO);
-            System.out.println("Conexion establecida");
-            System.out.println("Enviando datos");
+        	abrirConexion(Constantes.IP,7777);
             enviarDatos(objeto,mensaje);
-            System.out.println("esperando respuesta");
             out.println(mensaje);
-            System.out.println("Respuesta recibida");
-            //String msg=in.readLine();
-            //System.out.println("Respuesta recibida:"+msg);
+
+
+            abrirConexion(Constantes.IP,Constantes.PUERTO);
+            enviarDatos(objeto,mensaje);
+            out.println(mensaje);
         }catch(IOException e){
+             try {
+                 abrirConexion(Constantes.IP,Constantes.PUERTO);
+                 enviarDatos(objeto,mensaje);
+                 out.println(mensaje);
+			} catch (IOException e1) {
+			}
             
         }
     }
@@ -63,13 +65,10 @@ public class ConexionTotem implements Serializable{
         this.oos=new ObjectOutputStream(socket.getOutputStream());
         this.in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.out=new PrintWriter(socket.getOutputStream(),true);
-        //this.ois=new ObjectInputStream(socket.getInputStream());
+
     }
     
     private void enviarDatos(Object objeto,String mensaje) throws IOException{
-        //System.out.println("llega1");
-        //out.println(mensaje);
-        //out.flush();
         oos.writeObject(objeto);
         oos.flush();
         System.out.println("llega2");
@@ -83,7 +82,6 @@ public class ConexionTotem implements Serializable{
             oos.close();
             in.close();
             out.close();
-            //ois.close();
         } catch (IOException ex) {
             Logger.getLogger(ConexionTotem.class.getName()).log(Level.SEVERE, null, ex);
         }

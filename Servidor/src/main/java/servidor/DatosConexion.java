@@ -20,7 +20,6 @@ import java.net.Socket;
 public class DatosConexion implements Serializable {
  
     private static final long serialVersionUID = 1L;
-	//public ObjectOutputStream oos;
 	public BufferedReader in;
     public PrintWriter out;
     public ObjectInputStream ois;
@@ -35,17 +34,11 @@ public class DatosConexion implements Serializable {
         this.socket=s;
         try{
         	this.ois = new ObjectInputStream(socket.getInputStream());
-            //this.oos = new ObjectOutputStream(socket.getOutputStream());
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.dis = new DataInputStream(socket.getInputStream());
             this.out = new PrintWriter(socket.getOutputStream(),true);
-        	/*
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.ois = new ObjectInputStream(socket.getInputStream());  
-            this.out = new PrintWriter(socket.getOutputStream(),true);
-            //this.oos = new ObjectOutputStream(socket.getOutputStream());*/
         }catch(IOException e){
-            e.printStackTrace();
+
         }
         
     }
