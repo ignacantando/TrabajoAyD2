@@ -42,15 +42,14 @@ public class SocketAdministrador implements Serializable {
 	        try{
 	        	this.abrirConexion();
 	            enviarDatos(objeto,mensaje);
-	        }catch(Exception e){
-	            
+	        }catch(Exception e){   
 	        }
 	    }
 	    private void enviarDatos(Object objeto, String mensaje) throws IOException {
 	    	this.oos.writeObject(objeto);
             this.oos.flush();
-            this.salida.write("Administrador" + "\n"); // Agrega un salto de línea al final del mensaje
-            this.salida.flush(); // Asegúrate de que el mensaje se envíe inmediatamente
+            this.salida.write("Administrador" + "\n");
+            this.salida.flush(); 
             this.out.println(this.salida);
             this.out.flush();
 		}
@@ -77,7 +76,6 @@ public class SocketAdministrador implements Serializable {
 	        } catch (IOException ex) {
 	            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
 	        }
-
 	    }
 
 		public Socket getSocket() {

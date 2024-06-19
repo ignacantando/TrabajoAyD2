@@ -49,9 +49,7 @@ public class Administrador implements Serializable{
             this.setTiempoPromedio(adm.getTiempoPromedio());
             this.setPersonasAtendidas(adm.getPersonasAtendidas());
         }catch(Exception e){
-        	// maneja la excepción
-			System.err.println("No se pudo conectar. Reintentando…");    // registrar la excepción
-        	
+			System.err.println("No se pudo conectar. Reintentando…");
         }
     
 }
