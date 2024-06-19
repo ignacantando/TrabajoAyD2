@@ -1,6 +1,8 @@
 package abstractfactory;
 
-public interface IArchivoFactory {
+import java.io.Serializable;
+
+public interface IArchivoFactory extends Serializable{
     IArchivoClientes crearArchivoClientes();
     IArchivoLogs crearArchivoLogs();
 }

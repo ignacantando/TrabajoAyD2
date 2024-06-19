@@ -1,14 +1,26 @@
-12345678,1955-05-15,Default
-75423699,1985-10-23,Gold
-87654321,1985-10-23,Gold
-11223344,1978-07-09,Platinum
-34324553,1990-05-15,Platinum
-45345666,2005-10-23,Gold
-44565454,2023-07-09,Default
-3242246,2002-05-15,Gold
-54545455,1950-10-23,Platinum
-23443344,2020-07-09,Gold
-66666666,2024-05-31,Default
-78787878,2024-05-31,Default
-2224445,2024-05-31,Default
-878787,2024-05-31,Default
+Cliente{fecha_de_nacimiento='1955-05-15', numero_dni='12345678', prioridad=Default}
+
+Cliente{fecha_de_nacimiento='1985-10-23', numero_dni='75423699', prioridad=Gold}
+
+Cliente{fecha_de_nacimiento='1985-10-23', numero_dni='87654321', prioridad=Gold}
+
+Cliente{fecha_de_nacimiento='1978-07-09', numero_dni='11223344', prioridad=Platinum}
+
+Cliente{fecha_de_nacimiento='1990-05-15', numero_dni='34324553', prioridad=Platinum}
+
+Cliente{fecha_de_nacimiento='2005-10-23', numero_dni='45345666', prioridad=Gold}
+
+Cliente{fecha_de_nacimiento='2023-07-09', numero_dni='44565454', prioridad=Default}
+
+Cliente{fecha_de_nacimiento='2002-05-15', numero_dni='3242246', prioridad=Gold}
+
+Cliente{fecha_de_nacimiento='1950-10-23', numero_dni='54545455', prioridad=Platinum}
+
+Cliente{fecha_de_nacimiento='2020-07-09', numero_dni='23443344', prioridad=Gold}
+
+Cliente{fecha_de_nacimiento='2024-05-31', numero_dni='66666666', prioridad=Default}
+
+Cliente{fecha_de_nacimiento='2024-05-31', numero_dni='78747573', prioridad=Default}
+
+Cliente{fecha_de_nacimiento='2024-05-31', numero_dni='1111111', prioridad=Default}
+

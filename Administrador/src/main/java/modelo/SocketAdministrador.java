@@ -28,7 +28,6 @@ public class SocketAdministrador implements Serializable {
 	BufferedReader entrada;
 	BufferedWriter salida;
 	private ObjectOutputStream oos;
-	//private ObjectInputStream ois;
 	private PrintWriter out;
 	
 	private void abrirConexion() throws IOException{
@@ -36,16 +35,12 @@ public class SocketAdministrador implements Serializable {
 	    this.salida=new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 	    this.entrada=new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	    this.oos=new ObjectOutputStream(socket.getOutputStream());
-	    //this.ois=new ObjectInputStream(socket.getInputStream());
 	    this.out=new PrintWriter(socket.getOutputStream(),true);
 	}
 
 	    public void envio(Object objeto,String mensaje){
 	        try{
-	        	System.out.println(objeto);
 	        	this.abrirConexion();
-	        	System.out.println("Conexion establecida");
-	            System.out.println("Enviando datos");
 	            enviarDatos(objeto,mensaje);
 	        }catch(Exception e){
 	            
@@ -56,7 +51,6 @@ public class SocketAdministrador implements Serializable {
             this.oos.flush();
             this.salida.write("Administrador" + "\n"); // Agrega un salto de línea al final del mensaje
             this.salida.flush(); // Asegúrate de que el mensaje se envíe inmediatamente
-            System.out.println(this.salida);
             this.out.println(this.salida);
             this.out.flush();
 		}
@@ -64,20 +58,10 @@ public class SocketAdministrador implements Serializable {
 	    public Administrador recepcion(Object objeto,String mensaje){
 	        Administrador adm = new Administrador();
 	        try{
-	            //Object objetoARecibir;
-	        	System.out.println("esperando respuesta");
 	            out.println(mensaje);
-	            System.out.println("Respuesta recibida");
-	            //objetoARecibir = ois.readObject();
 	            adm.setPersonasAtendidas(Integer.parseInt(this.entrada.readLine()));
 	            adm.setTiempo(this.entrada.readLine());
 	            adm.setTiempoPromedio(this.entrada.readLine());
-	            System.out.println("llega2");
-	            System.out.println("datos recibidos");
-	            /*if(objetoARecibir instanceof Administrador){
-	                adm = (Administrador) objetoARecibir;
-	                System.out.println(adm);
-	            }*/
 	        }catch(Exception e){
 	            
 	        }finally{
@@ -90,19 +74,11 @@ public class SocketAdministrador implements Serializable {
 	            socket.close();
 	            oos.close();
 	            out.close();
-	            //ois.close();
 	        } catch (IOException ex) {
 	            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
 	        }
 
 	    }
-		/*public ArrayList<String> getDnis() {
-			return dnis;
-		}
-
-		public void setDnis(ArrayList<String> dnis) {
-			this.dnis = dnis;
-		}*/
 
 		public Socket getSocket() {
 			return socket;
@@ -135,14 +111,6 @@ public class SocketAdministrador implements Serializable {
 		public void setOos(ObjectOutputStream oos) {
 			this.oos = oos;
 		}
-
-		/*public ObjectInputStream getOis() {
-			return ois;
-		}
-
-		public void setOis(ObjectInputStream ois) {
-			this.ois = ois;
-		}*/
 
 		public PrintWriter getOut() {
 			return out;

@@ -26,18 +26,40 @@ public class TxtArchivoClientes implements IArchivoClientes {
 
     @Override
     public ArrayList<Cliente> leerClientes() {
-        clientes = new ArrayList<>();
+        ArrayList<Cliente> clientes = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = reader.readLine()) != null) {
-                // Suponiendo que el formato de cada línea sea el mismo que el de Cliente.toString()
-                String[] datos = linea.split(",");
-                Cliente cliente = new Cliente(datos[0], datos[2], datos[1]); 
-                clientes.add(cliente);
+                // Eliminamos los caracteres innecesarios y dividimos la línea en partes clave
+                linea = linea.replace("Cliente{", "").replace("}", "").replace("'", "");
+                String[] partes = linea.split(", ");
+
+                if (partes.length == 3) {
+                    // Extraemos los datos de cada parte asegurándonos de que tienen el formato esperado
+                    String fechaNacimiento = getValue(partes[0], "fecha_de_nacimiento");
+                    String numeroDni = getValue(partes[1], "numero_dni");
+                    String prioridad = getValue(partes[2], "prioridad");
+
+                    if (fechaNacimiento != null && numeroDni != null && prioridad != null) {
+                        // Creamos un objeto Cliente y lo añadimos a la lista
+                        Cliente cliente = new Cliente(numeroDni,prioridad,fechaNacimiento);
+                        clientes.add(cliente);
+                    }
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return clientes;
     }
+
+    private String getValue(String part, String key) {
+        String[] keyValue = part.split("=");
+        if (keyValue.length == 2 && keyValue[0].trim().equals(key)) {
+            return keyValue[1].trim();
+        }
+        return null;
+    }
+
+
 }

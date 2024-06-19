@@ -72,5 +72,17 @@ public class ClienteLog implements Serializable {
                 '}' + "\n";
     }
 
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public void setTiempoInicio(GregorianCalendar tiempoInicio) {
+		this.tiempoInicio = tiempoInicio;
+	}
+
+	public void setTiempoFin(GregorianCalendar tiempoFin) {
+		this.tiempoFin = tiempoFin;
+	}
+
 }
 

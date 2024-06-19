@@ -11,12 +11,12 @@ public class PrioridadEdad implements Prioridad{
 	public ArrayList<String> aplicaPrioridad(ArrayList<Cliente> clientes) {
 		for(int i=0;i<clientes.size();i++) {
 			int year=Integer.parseInt(clientes.get(i).getFecha_de_nacimiento().substring(0, 4));
-			if(year<=1960) 
+			if(year<=1975) 
 				dnis.add(clientes.get(i).getDni());
 		}
 		for(int i=0;i<clientes.size();i++) {
 			int year=Integer.parseInt(clientes.get(i).getFecha_de_nacimiento().substring(0, 4));
-			if(year<=2005) 
+			if(year>1975 && year<=2005) 
 				dnis.add(clientes.get(i).getDni());
 		}
 		for(int i=0;i<clientes.size();i++) {

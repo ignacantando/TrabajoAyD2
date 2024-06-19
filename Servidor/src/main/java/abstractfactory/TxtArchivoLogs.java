@@ -29,27 +29,48 @@ public class TxtArchivoLogs implements IArchivoLogs {
 
     @Override
     public ArrayList<ClienteLog> leerLogs() {
-        clientesLog = new ArrayList<>();
+        ArrayList<ClienteLog> clientesLog = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = reader.readLine()) != null) {
-                // Suponiendo que el formato de cada línea sea el mismo que el de ClienteLog.toString()
-                // Puedes ajustar esto dependiendo de cómo se guarden los datos en el archivo JSON
-                String[] datos = linea.split(",");
-                GregorianCalendar tiempoInicio = parsearFecha(datos[0]);
-                GregorianCalendar tiempoFin = parsearFecha(datos[1]);
-                ClienteLog log = new ClienteLog(datos[2],tiempoInicio,tiempoFin);
-                clientesLog.add(log);
+                // Eliminamos los caracteres innecesarios y dividimos la línea en partes clave
+                linea = linea.replace("ClienteLog{", "").replace("}", "").replace("'", "");
+                String[] partes = linea.split(", ");
+
+                if (partes.length == 3) {
+                    // Extraemos los datos de cada parte asegurándonos de que tienen el formato esperado
+                    String dni = getValue(partes[0], "dni");
+                    String tiempoInicioStr = getValue(partes[1], "tiempoInicio");
+                    String tiempoFinStr = getValue(partes[2], "tiempoFin");
+
+                    if (dni != null && tiempoInicioStr != null) {
+                        // Parseamos las fechas
+                        GregorianCalendar tiempoInicio = parsearFecha(tiempoInicioStr);
+                        GregorianCalendar tiempoFin = "null".equals(tiempoFinStr) ? null : parsearFecha(tiempoFinStr);
+
+                        // Creamos un objeto ClienteLog y lo añadimos a la lista
+                        ClienteLog log = new ClienteLog(dni, tiempoInicio, tiempoFin);
+                        clientesLog.add(log);
+                    }
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return clientesLog;
     }
-    
+
+    private String getValue(String part, String key) {
+        String[] keyValue = part.split("=");
+        if (keyValue.length == 2 && keyValue[0].trim().equals(key)) {
+            return keyValue[1].trim();
+        }
+        return null;
+    }
+
     private GregorianCalendar parsearFecha(String fecha) {
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             dateFormat.setLenient(false);
             GregorianCalendar calendar = new GregorianCalendar();
             calendar.setTime(dateFormat.parse(fecha));
@@ -58,4 +79,5 @@ public class TxtArchivoLogs implements IArchivoLogs {
             return null;
         }
     }
+
 }

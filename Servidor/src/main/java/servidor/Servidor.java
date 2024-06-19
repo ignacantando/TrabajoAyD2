@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import constantes.Constantes;
 import modelo.Administrador;
 import modelo.Empleado;
 import modelo.Monitor;
@@ -29,25 +30,18 @@ public class Servidor extends Thread implements  Serializable{
     public Servidor() throws IOException{
     	this.manager = ColasManager.getInstancia();
     	try {
-			this.serverSocket = new ServerSocket(5555);
+			this.serverSocket = new ServerSocket(Constantes.PUERTO);
+			esPrincipal=true;
 		} catch (IOException e) {
 			esPrincipal=false;
-			this.serverSocket = new ServerSocket(7777);
+			this.serverSocket = new ServerSocket(Constantes.PUERTOSECUNDARIO);
 		}
     }
-    
-    public Servidor(ColasManager manager) throws IOException {
-    	this.manager = manager;
-    	this.serverSocket = new ServerSocket(5555);
-    	System.out.println("Servidor TCP secundario iniciado. Esperando conexiones...");
-    }
-
     
     public void startServer() {
     	try {
 			while(true) {
 				Socket clientSocket = this.serverSocket.accept();
-				System.out.println(serverSocket.getLocalPort());
 				Thread thread = new Thread(new ClientHandler(clientSocket,manager,this));
 				thread.start();
 			}
@@ -61,6 +55,7 @@ public class Servidor extends Thread implements  Serializable{
         private Socket clientSocket;
         private ColasManager manager;
         private Servidor servidor;
+        private DataSinc data;
 
         public ClientHandler(Socket clientSocket, ColasManager manager, Servidor servidor) {
             this.clientSocket = clientSocket;
@@ -72,20 +67,14 @@ public class Servidor extends Thread implements  Serializable{
         public void run() {
             try { 
                 DatosConexion datos = new DatosConexion(this.clientSocket);
-                
                 Object obj = datos.ois.readObject();
                 if(obj instanceof Totem){
-                	System.out.println("entra totem");
                     Totem totem=(Totem)obj;
-                    System.out.println("dni que entra: " + totem.getDni());
                     manager.newCliente(totem.getDni());
                     System.out.println("documentos: " + manager.getDnis().toString());
                 }else if(obj instanceof Televisor){
-                	System.out.println("entra televisor");
-                	System.out.println("datos: " + datos);
                     manager.creaTele(datos);
                 }else if(obj instanceof Empleado){
-                	System.out.println("entra empleado");
                     Empleado empleado = (Empleado) obj;
                     String msg=datos.in.readLine();
                     if(msg.equalsIgnoreCase("nuevo")) {
@@ -100,15 +89,21 @@ public class Servidor extends Thread implements  Serializable{
                 	String msg=datos.in.readLine();
                 	 if(msg.equalsIgnoreCase("nuevo")) {
                 		servidor.cambiarAPuertoPrincipal();
-                     }else {
-                     	
                      }
                 }
+                else if(obj instanceof ColasManager) {
+                	ColasManager cola=(ColasManager)obj;
+                	data=new DataSinc();
+                	data.seteaParametros(manager, cola);
+                } 
+                if(servidor.esPrincipal==true) {
+                	data=new DataSinc();
+                    data.envio(manager,"Actualiza",Constantes.PUERTOSECUNDARIO);
+                }
             } catch (IOException e) {
-                System.err.println("Error al manejar la conexión con el cliente: " + e.getMessage());
+                e.getStackTrace();
             } catch (ClassNotFoundException e) {
             	
-			}catch(NullPointerException e) {
 			}
         }
     }
@@ -130,13 +125,30 @@ public class Servidor extends Thread implements  Serializable{
     public void cambiarAPuertoPrincipal() {
         try {
             cerrarSocket();
-            this.serverSocket = new ServerSocket(5555);
+            this.serverSocket = new ServerSocket(Constantes.PUERTO);
             this.esPrincipal = true;
-            System.out.println("Servidor secundario ahora es el principal, escuchando en el puerto " + 5555);
+            System.out.println("Servidor secundario ahora es el principal, escuchando en el puerto " + Constantes.PUERTO);
             startServer();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+	public boolean isEsPrincipal() {
+		return esPrincipal;
+	}
+
+	public void setEsPrincipal(boolean esPrincipal) {
+		this.esPrincipal = esPrincipal;
+	}
+
+	public ColasManager getManager() {
+		return manager;
+	}
+
+	public void setManager(ColasManager manager) {
+		this.manager = manager;
+	}
     
+	
 }

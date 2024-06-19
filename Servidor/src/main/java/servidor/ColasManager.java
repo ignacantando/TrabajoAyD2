@@ -2,6 +2,7 @@ package servidor;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import abstractfactory.*;
@@ -15,8 +16,9 @@ import strategy.PrioridadDefault;
 import strategy.PrioridadEdad;
 
 
-public class ColasManager implements Registro,Llamado,Notificacion,Monitoreo{
+public class ColasManager implements Registro,Llamado,Notificacion,Monitoreo,Serializable{
 
+	private static final long serialVersionUID = 1131654034383541732L;
     private ArrayList<String> boxes=new ArrayList<String>();
     private ArrayList<String> dnis=new ArrayList<String>();
     private ArrayList<String> atendidos=new ArrayList<String>();
@@ -29,11 +31,10 @@ public class ColasManager implements Registro,Llamado,Notificacion,Monitoreo{
     
     private static int indexBox=0;
     private static int indexDnis=0;
-    private ArrayList<DatosConexion> teles=new ArrayList<DatosConexion>();
+    private transient ArrayList<DatosConexion> teles=new ArrayList<DatosConexion>();
     private long tiempo = System.currentTimeMillis();
     private static ColasManager instancia;
-    
-    
+      
     private String prioridad;
     private String tipoArchivo;
     private Prioridad prio;
@@ -53,12 +54,15 @@ public class ColasManager implements Registro,Llamado,Notificacion,Monitoreo{
 
 
         if(tipoArchivo.compareToIgnoreCase("json")==0) {
+        	System.out.println("CargaJson");
         	factory = new JsonArchivoFactory();
         }
         else if(tipoArchivo.compareToIgnoreCase("xml")==0) {
+        		System.out.println("CargaXml");
         	  factory = new XmlArchivoFactory();
         }
         else {
+        	  System.out.println("CargaTxt");
         	  factory = new TxtArchivoFactory();
         }
         
@@ -111,7 +115,6 @@ public class ColasManager implements Registro,Llamado,Notificacion,Monitoreo{
     
     public void newCliente(String dni) {
     	int esta=0;
-    	//Mirar si esta en la lista de clientes y sino agregarlo con prioridad minima
     	for(int i=0;i<clientes.size();i++) {
     		if(dni.compareTo(clientes.get(i).getDni())==0){
     			esta=1;
@@ -151,7 +154,6 @@ public class ColasManager implements Registro,Llamado,Notificacion,Monitoreo{
     		for(int i=0;i<clientes.size();i++) {
     			if(clientesLog.get(i).getDni().compareTo(dnis.get(0))==0) {
     				this.clientes.get(i).ponerAtendido();
-    				System.out.println(this.clientes.get(i).getEstado());
     				clientesLog.get(i).setTiempoFin();
     			}	
     		}
@@ -309,4 +311,127 @@ public class ColasManager implements Registro,Llamado,Notificacion,Monitoreo{
         }
     }
 
+	public ArrayList<String> getBoxes() {
+		return boxes;
+	}
+
+	public void setBoxes(ArrayList<String> boxes) {
+		this.boxes = boxes;
+	}
+
+	public ArrayList<Integer> getTiempoInicio() {
+		return tiempoInicio;
+	}
+
+	public void setTiempoInicio(ArrayList<Integer> tiempoInicio) {
+		this.tiempoInicio = tiempoInicio;
+	}
+
+	public ArrayList<Integer> getTiempoFin() {
+		return tiempoFin;
+	}
+
+	public void setTiempoFin(ArrayList<Integer> tiempoFin) {
+		this.tiempoFin = tiempoFin;
+	}
+
+	public ArrayList<ClienteLog> getClientesLog() {
+		return clientesLog;
+	}
+
+	public void setClientesLog(ArrayList<ClienteLog> clientesLog) {
+		this.clientesLog = clientesLog;
+	}
+
+	public static int getIndexBox() {
+		return indexBox;
+	}
+
+	public static void setIndexBox(int indexBox) {
+		ColasManager.indexBox = indexBox;
+	}
+
+	public static int getIndexDnis() {
+		return indexDnis;
+	}
+
+	public static void setIndexDnis(int indexDnis) {
+		ColasManager.indexDnis = indexDnis;
+	}
+
+	public ArrayList<DatosConexion> getTeles() {
+		return teles;
+	}
+
+	public void setTeles(ArrayList<DatosConexion> teles) {
+		this.teles = teles;
+	}
+
+	public long getTiempo() {
+		return tiempo;
+	}
+
+	public void setTiempo(long tiempo) {
+		this.tiempo = tiempo;
+	}
+
+	public String getPrioridad() {
+		return prioridad;
+	}
+
+	public void setPrioridad(String prioridad) {
+		this.prioridad = prioridad;
+	}
+
+	public String getTipoArchivo() {
+		return tipoArchivo;
+	}
+
+	public void setTipoArchivo(String tipoArchivo) {
+		this.tipoArchivo = tipoArchivo;
+	}
+
+	public Prioridad getPrio() {
+		return prio;
+	}
+
+	public void setPrio(Prioridad prio) {
+		this.prio = prio;
+	}
+
+	public IArchivoFactory getFactory() {
+		return factory;
+	}
+
+	public void setFactory(IArchivoFactory factory) {
+		this.factory = factory;
+	}
+
+	public IArchivoClientes getArchivoClientes() {
+		return archivoClientes;
+	}
+
+	public void setArchivoClientes(IArchivoClientes archivoClientes) {
+		this.archivoClientes = archivoClientes;
+	}
+
+	public IArchivoLogs getArchivoLogs() {
+		return archivoLogs;
+	}
+
+	public void setArchivoLogs(IArchivoLogs archivoLogs) {
+		this.archivoLogs = archivoLogs;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public void setClientes(ArrayList<Cliente> clientes) {
+		this.clientes = clientes;
+	}
+
+	public static void setInstancia(ColasManager instancia) {
+		ColasManager.instancia = instancia;
+	}   
 }

@@ -86,4 +86,9 @@ public class Cliente implements Serializable, IState{
 	public void ponerSinAtender() {
 		this.estado.ponerSinAtender();
 	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
 }

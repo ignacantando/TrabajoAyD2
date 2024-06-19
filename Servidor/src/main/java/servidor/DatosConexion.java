@@ -20,14 +20,13 @@ import java.net.Socket;
 public class DatosConexion implements Serializable {
  
     private static final long serialVersionUID = 1L;
-	public BufferedReader in;
-    public PrintWriter out;
-    public ObjectInputStream ois;
-    public Socket socket;
-    public DataInputStream dis;
+	public  BufferedReader in;
+    public  PrintWriter out;
+    public  ObjectInputStream ois;
+    public  Socket socket;
+    public  DataInputStream dis;
     
     public DatosConexion() {
-		super();
 	}
 
 	public DatosConexion(Socket s){

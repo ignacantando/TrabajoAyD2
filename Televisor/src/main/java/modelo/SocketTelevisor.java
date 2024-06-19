@@ -18,16 +18,10 @@ import controlador.ControladorTelevisor;
 
 public class SocketTelevisor implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1131654034383541732L;
-	//ArrayList<String> dnis = new ArrayList<String>();
 	Socket socket;
 	BufferedReader entrada;
-	BufferedWriter salida;
 	private ObjectOutputStream oos;
-	//private ObjectInputStream ois;
 	private PrintWriter out;
 	private ControladorTelevisor controlador;
 
@@ -38,24 +32,17 @@ public class SocketTelevisor implements Serializable{
 	
 	private void abrirConexion() throws IOException{
 	    this.socket=new Socket("localhost",5555);
-	    this.salida=new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 	    this.entrada=new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	    this.oos=new ObjectOutputStream(socket.getOutputStream());
-	    //this.ois=new ObjectInputStream(socket.getInputStream());
 	    this.out=new PrintWriter(socket.getOutputStream(),true);
 	}
 
 	    
 	    public void envio(Object objeto,String mensaje){
 	        try{
-	        	System.out.println(objeto);
 	        	this.abrirConexion();
-	        	System.out.println("Conexion establecida");
-	            System.out.println("Enviando datos");
 	            enviarDatos(objeto,mensaje);
-	            System.out.println("esperando respuesta");
 	            out.println(mensaje);
-	            System.out.println("Respuesta recibida");
 	        }catch(Exception e){
 	            
 	        }finally{
@@ -68,11 +55,8 @@ public class SocketTelevisor implements Serializable{
             this.oos.flush();
             
             while(!this.socket.isClosed()) {
-            	System.out.println("ssss");
             	String msgbox=this.entrada.readLine();
             	String msgdni=this.entrada.readLine();
-            	System.out.println("msgbox " + msgbox);
-            	System.out.println("msgdani " + msgdni);
             	Timer timer = new Timer();         
             	timer.schedule(new ActualizaTask(this.controlador,msgdni,msgbox),2000); 
             	timer.schedule(new RemoveTask(this.controlador),15000);  
@@ -118,19 +102,11 @@ public class SocketTelevisor implements Serializable{
 	            socket.close();
 	            oos.close();
 	            out.close();
-	            //ois.close();
 	        } catch (IOException ex) {
 	            Logger.getLogger(Televisor.class.getName()).log(Level.SEVERE, null, ex);
 	        }
 
 	    }
-		/*public ArrayList<String> getDnis() {
-			return dnis;
-		}
-
-		public void setDnis(ArrayList<String> dnis) {
-			this.dnis = dnis;
-		}*/
 
 		public Socket getSocket() {
 			return socket;
@@ -148,13 +124,6 @@ public class SocketTelevisor implements Serializable{
 			this.entrada = entrada;
 		}
 
-		public BufferedWriter getSalida() {
-			return salida;
-		}
-
-		public void setSalida(BufferedWriter salida) {
-			this.salida = salida;
-		}
 
 		public ObjectOutputStream getOos() {
 			return oos;
@@ -163,14 +132,6 @@ public class SocketTelevisor implements Serializable{
 		public void setOos(ObjectOutputStream oos) {
 			this.oos = oos;
 		}
-
-		/*public ObjectInputStream getOis() {
-			return ois;
-		}
-
-		public void setOis(ObjectInputStream ois) {
-			this.ois = ois;
-		}*/
 
 		public PrintWriter getOut() {
 			return out;

@@ -13,8 +13,6 @@ import java.util.logging.Logger;
 public class Monitor implements Serializable {
 	private static final long serialVersionUID = 1131654034383541732L;
 	Socket socket;
-	BufferedReader entrada;
-	BufferedWriter salida;
 	private ObjectOutputStream oos;
 	private PrintWriter out;
 	
@@ -24,8 +22,6 @@ public class Monitor implements Serializable {
 	
 	private void abrirConexion(int puerto) throws IOException{
 	    this.socket=new Socket("localhost",puerto);
-	    this.salida=new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-	    this.entrada=new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	    this.oos=new ObjectOutputStream(socket.getOutputStream());
 	    this.out=new PrintWriter(socket.getOutputStream(),true);
 	}
@@ -61,22 +57,6 @@ public class Monitor implements Serializable {
 
 		public void setSocket(Socket socket) {
 			this.socket = socket;
-		}
-
-		public BufferedReader getEntrada() {
-			return entrada;
-		}
-
-		public void setEntrada(BufferedReader entrada) {
-			this.entrada = entrada;
-		}
-
-		public BufferedWriter getSalida() {
-			return salida;
-		}
-
-		public void setSalida(BufferedWriter salida) {
-			this.salida = salida;
 		}
 
 		public ObjectOutputStream getOos() {

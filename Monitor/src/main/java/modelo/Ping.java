@@ -29,7 +29,7 @@ public class Ping extends Thread implements Serializable{
 				System.out.println("conexion exitosa");
 				cont=0;
 			}else {
-				if(cont>4) {
+				if(cont>=3) {
 					try {
 						System.out.println("Cambiando SV");
 						monitor.envio(this,"nuevo",7777);

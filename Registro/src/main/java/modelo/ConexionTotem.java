@@ -25,10 +25,7 @@ public class ConexionTotem implements Serializable{
     private static final long serialVersionUID = 4209360273818925922L;
     public Socket socket;
     public ObjectOutputStream oos;
-    public BufferedReader in;
-    public PrintWriter out;
-    
-    
+
     public void envioCliente(Object objeto,String mensaje){
         try{
             envioDatosAservidor(objeto,mensaje);
@@ -41,31 +38,15 @@ public class ConexionTotem implements Serializable{
     
     public void envioDatosAservidor(Object objeto,String mensaje){
         try{
-        	abrirConexion(Constantes.IP,7777);
-            enviarDatos(objeto,mensaje);
-            out.println(mensaje);
-
-
             abrirConexion(Constantes.IP,Constantes.PUERTO);
             enviarDatos(objeto,mensaje);
-            out.println(mensaje);
         }catch(IOException e){
-             try {
-                 abrirConexion(Constantes.IP,Constantes.PUERTO);
-                 enviarDatos(objeto,mensaje);
-                 out.println(mensaje);
-			} catch (IOException e1) {
-			}
-            
         }
     }
     
     private void abrirConexion(String ip,int puerto) throws IOException{
         this.socket=new Socket(ip,puerto);
         this.oos=new ObjectOutputStream(socket.getOutputStream());
-        this.in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.out=new PrintWriter(socket.getOutputStream(),true);
-
     }
     
     private void enviarDatos(Object objeto,String mensaje) throws IOException{
@@ -80,8 +61,6 @@ public class ConexionTotem implements Serializable{
         try {
             socket.close();
             oos.close();
-            in.close();
-            out.close();
         } catch (IOException ex) {
             Logger.getLogger(ConexionTotem.class.getName()).log(Level.SEVERE, null, ex);
         }
